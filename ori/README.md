@@ -1,6 +1,6 @@
 # Ori Language
 
-[Progress](http://craftinginterpreters.com/representing-code.html)
+[Progress](http://craftinginterpreters.com/parsing-expressions.html)
 
 ## Sources
 
