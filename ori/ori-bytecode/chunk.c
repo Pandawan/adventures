@@ -3,7 +3,8 @@
 #include "chunk.h"
 #include "memory.h"
 
-void initChunk(Chunk* chunk) {
+void initChunk(Chunk* chunk)
+{
     chunk->count = 0;
     chunk->capacity = 0;
     chunk->code = NULL;
@@ -11,7 +12,8 @@ void initChunk(Chunk* chunk) {
     initValueArray(&chunk->constants);
 }
 
-void freeChunk(Chunk* chunk) {
+void freeChunk(Chunk* chunk)
+{
     // Deallocate all of the memory
     FREE_ARRAY(uint8_t, chunk->code, chunk->capacity);
     FREE_ARRAY(unsigned int, chunk->lines, chunk->capacity);
@@ -20,9 +22,11 @@ void freeChunk(Chunk* chunk) {
     initChunk(chunk);
 }
 
-void writeChunk(Chunk* chunk, uint8_t byte, unsigned int line) {
+void writeChunk(Chunk* chunk, uint8_t byte, unsigned int line)
+{
     // If the "code" byte array is too small, grow it
-    if (chunk->capacity < chunk->count + 1) {
+    if (chunk->capacity < chunk->count + 1)
+    {
         unsigned int oldCapacity = chunk->capacity;
         chunk->capacity = GROW_CAPACITY(oldCapacity);
         chunk->code = GROW_ARRAY(chunk->code, uint8_t, oldCapacity, chunk->capacity);
@@ -35,7 +39,8 @@ void writeChunk(Chunk* chunk, uint8_t byte, unsigned int line) {
     chunk->count++;
 }
 
-int addConstant(Chunk* chunk, Value value) {
+int addConstant(Chunk* chunk, Value value)
+{
     writeValueArray(&chunk->constants, value);
     return chunk->constants.count - 1;
 }

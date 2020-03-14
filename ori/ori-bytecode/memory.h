@@ -4,12 +4,12 @@
 // Calculates a new capacity based on current given capacity
 // Initially use size 8, then double it if more is needed
 #define GROW_CAPACITY(capacity) \
-    ((capacity) < 8 ? 8 : (capacity) * 2)
+    ((capacity) < 8 ? 8 : (capacity)*2)
 
 // Grows the array to the new size for the given type
-#define GROW_ARRAY(previous, type, oldCount, count) \
+#define GROW_ARRAY(previous, type, oldCount, count)        \
     (type*)reallocate(previous, sizeof(type) * (oldCount), \
-        sizeof(type) * (count))
+                      sizeof(type) * (count))
 
 // Frees the given array, by reallocating with new size 0
 #define FREE_ARRAY(type, pointer, oldCount) \
