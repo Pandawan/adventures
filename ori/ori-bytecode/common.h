@@ -5,4 +5,7 @@
 #include <stddef.h>
 #include <stdint.h>
 
+// Flag used to print each instruction before executing it
+#define DEBUG_TRACE_EXECUTION
+
 #endif

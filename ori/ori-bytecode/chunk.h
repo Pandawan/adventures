@@ -11,6 +11,11 @@ typedef enum
     // Operand(s): Index in the constant array
     // TODO: Implement a OP_CONSTANT_LONG to allow for more than 256 different constants per chunk (See challenges for C14)
     OP_CONSTANT,
+    OP_ADD,
+    OP_SUBTRACT,
+    OP_MULTIPLY,
+    OP_DIVIDE,
+    OP_NEGATE,
     OP_RETURN,
 } OpCode;
 
