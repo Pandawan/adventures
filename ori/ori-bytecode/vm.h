@@ -26,8 +26,8 @@ typedef enum {
 
 void initVM();
 void freeVM();
-// Interpret the given chunk of code
-InterpretResult interpret(Chunk* chunk);
+// Interpret the given source code
+InterpretResult interpret(const char* source);
 // Push the given value to the top of the stack
 void push(Value value);
 // Pop the top value off the stack
