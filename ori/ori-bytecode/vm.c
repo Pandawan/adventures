@@ -1,3 +1,4 @@
+#include <stdarg.h>
 #include <stdio.h>
 
 #include "common.h"
@@ -16,6 +17,24 @@ static void resetStack()
     vm.stackTop = vm.stack;
 }
 
+static void runtimeError(const char* format, ...)
+{
+    va_list args;
+    va_start(args, format);
+    vfprintf(stderr, format, args);
+    va_end(args);
+    fputs("\n", stderr);
+
+    size_t instruction = vm.ip - vm.chunk->code;
+    int line = vm.chunk->lines[instruction];
+    fprintf(stderr, "[line %d] in script\n", line);
+
+    // TODO: Perhaps do some kind of recovery from runtime errors
+    // TODO: Stack trace
+
+    resetStack();
+}
+
 void initVM()
 {
     resetStack();
@@ -23,6 +42,33 @@ void initVM()
 
 void freeVM()
 {
+}
+
+void push(Value value)
+{
+    *vm.stackTop = value;
+    vm.stackTop++;
+}
+
+Value pop()
+{
+    vm.stackTop--;
+    // No need to remove the value, it'll eventually be overwritten anyway
+    return *vm.stackTop;
+}
+
+// Get the value a specific distance down from the top of the stack without popping it
+// 0 is top of the stack
+static Value peek(int distance)
+{
+    return vm.stackTop[-1 - distance];
+}
+
+// TODO: Should this be part of value.c? (with header)
+static bool isFalsy(Value value)
+{
+    // null and false are the only falsy values
+    return IS_NULL(value) || (IS_BOOL(value) && !AS_BOOL(value));
 }
 
 static InterpretResult run()
@@ -36,12 +82,19 @@ static InterpretResult run()
 // NOTE: Using a do while in order to wrap this boilerplate in a code block
 // so it doesn't conflict with other code when processed
 // Also, since value is a stack, b comes out first
-#define BINARY_OP(op)     \
-    do                    \
-    {                     \
-        double b = pop(); \
-        double a = pop(); \
-        push(a op b);     \
+// This also checks for type
+#define BINARY_OP(valueType, op)                        \
+    do                                                  \
+    {                                                   \
+        if (!IS_NUMBER(peek(0)) || !IS_NUMBER(peek(1))) \
+        {                                               \
+            runtimeError("Operands must be numbers.");  \
+            return INTERPRET_RUNTIME_ERROR;             \
+        }                                               \
+                                                        \
+        double b = AS_NUMBER(pop());                    \
+        double a = AS_NUMBER(pop());                    \
+        push(valueType(a op b));                        \
     } while (false)
 
     // Infinite loop until result
@@ -75,22 +128,58 @@ static InterpretResult run()
                 printf("\n");
                 break;
             }
+
+            case OP_NULL:
+                push(NULL_VAL);
+                break;
+            case OP_TRUE:
+                push(BOOL_VAL(true));
+                break;
+            case OP_FALSE:
+                push(BOOL_VAL(false));
+                break;
+
+            case OP_EQUAL:
+            {
+                Value b = pop();
+                Value a = pop();
+                push(BOOL_VAL(valuesEqual(a, b)));
+                break;
+            }
+            case OP_GREATER:
+                BINARY_OP(BOOL_VAL, >);
+                break;
+            case OP_LESS:
+                BINARY_OP(BOOL_VAL, <);
+                break;
             // TODO: Maybe add bitwise operators
             case OP_ADD:
-                BINARY_OP(+);
+                BINARY_OP(NUMBER_VAL, +);
                 break;
             case OP_SUBTRACT:
-                BINARY_OP(-);
+                BINARY_OP(NUMBER_VAL, -);
                 break;
             case OP_MULTIPLY:
-                BINARY_OP(*);
+                BINARY_OP(NUMBER_VAL, *);
                 break;
             case OP_DIVIDE:
-                BINARY_OP(/);
+                BINARY_OP(NUMBER_VAL, /);
                 break;
+
+            case OP_NOT:
+                push(BOOL_VAL(isFalsy(pop())));
+                break;
+
             case OP_NEGATE:
-                push(-pop());
+            {
+                if (!IS_NUMBER(peek(0)))
+                {
+                    runtimeError("Operand must be a number.");
+                    return INTERPRET_RUNTIME_ERROR;
+                }
+                push(NUMBER_VAL(-AS_NUMBER(pop())));
                 break;
+            }
             case OP_RETURN:
             {
                 printValue(pop());
@@ -112,29 +201,17 @@ InterpretResult interpret(const char* source)
     initChunk(&chunk);
 
     // Fill the chunk with compiled bytecode
-    if (!compile(source, &chunk)) {
+    if (!compile(source, &chunk))
+    {
         freeChunk(&chunk);
         return INTERPRET_COMPILE_ERROR;
     }
 
     vm.chunk = &chunk;
     vm.ip = vm.chunk->code;
-    
+
     InterpretResult result = run();
 
     freeChunk(&chunk);
     return result;
-}
-
-void push(Value value)
-{
-    *vm.stackTop = value;
-    vm.stackTop++;
-}
-
-Value pop()
-{
-    vm.stackTop--;
-    // No need to remove the value, it'll eventually be overwritten anyway
-    return *vm.stackTop;
 }

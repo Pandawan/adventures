@@ -187,7 +187,7 @@ static TokenType getIdentifierType()
         case 'l':
             return checkKeyword(1, 2, "et", TOKEN_LET);
         case 'n':
-            return checkKeyword(1, 2, "ull", TOKEN_NULL);
+            return checkKeyword(1, 3, "ull", TOKEN_NULL);
         case 'o':
             return checkKeyword(1, 1, "r", TOKEN_OR);
         case 'p':
@@ -312,7 +312,7 @@ Token scanToken()
             return makeToken(TOKEN_PLUS);
         case '/':
             return makeToken(TOKEN_SLASH);
-        case '*':
+        case '*': // TODO: Maybe add a power operator with **
             return makeToken(TOKEN_STAR);
 
         case '!':

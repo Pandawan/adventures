@@ -7,7 +7,8 @@
 // TODO: Should there be a dynamic stack (still with a max amount but bigger than this)
 #define STACK_MAX 256
 
-typedef struct {
+typedef struct
+{
     Chunk* chunk;
     // Instruction Pointer
     // Pointer to the location of the instruction that is currently being executed
@@ -18,7 +19,8 @@ typedef struct {
     Value* stackTop;
 } VM;
 
-typedef enum {
+typedef enum
+{
     INTERPRET_OK,
     INTERPRET_COMPILE_ERROR,
     INTERPRET_RUNTIME_ERROR

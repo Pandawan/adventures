@@ -11,11 +11,23 @@ typedef enum
     // Operand(s): Index in the constant array
     // TODO: Implement a OP_CONSTANT_LONG to allow for more than 256 different constants per chunk (See challenges for C14)
     OP_CONSTANT,
+    // Store null, true, and false as operations rather than constants in a table
+    OP_NULL,
+    OP_TRUE,
+    OP_FALSE,
+    // Binary operations
+    OP_EQUAL,
+    OP_GREATER,
+    OP_LESS,
+    // TODO: For better performance, implement an OP_NOT_EQUAL, OP_GREATER_EQUAL, OP_LESS_EQUAL rather than turn it into two operations
     OP_ADD,
     OP_SUBTRACT,
     OP_MULTIPLY,
     OP_DIVIDE,
+    // Unary operations
+    OP_NOT,
     OP_NEGATE,
+
     OP_RETURN,
 } OpCode;
 
