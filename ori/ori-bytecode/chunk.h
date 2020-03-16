@@ -29,7 +29,7 @@ typedef struct
     // This is especially useful for reporting runtime errors,
     // where the location of the offending code/operation is.
     // TODO: Implement compression for repeated lines (See Challenges for C14)
-    unsigned int* lines;
+    int* lines;
     // Dynamic array of all constants/literals
     ValueArray constants;
 } Chunk;
@@ -40,7 +40,7 @@ void initChunk(Chunk* chunk);
 void freeChunk(Chunk* chunk);
 // Append a byte to the end of the chunk
 // (reporting the line where that byte appears in source code)
-void writeChunk(Chunk* chunk, uint8_t byte, unsigned int line);
+void writeChunk(Chunk* chunk, uint8_t byte, int line);
 // Add a constant/literal to the chunk
 // Returns the index of the newly added constant
 int addConstant(Chunk* chunk, Value value);

@@ -16,21 +16,21 @@ void freeChunk(Chunk* chunk)
 {
     // Deallocate all of the memory
     FREE_ARRAY(uint8_t, chunk->code, chunk->capacity);
-    FREE_ARRAY(unsigned int, chunk->lines, chunk->capacity);
+    FREE_ARRAY(int, chunk->lines, chunk->capacity);
     freeValueArray(&chunk->constants);
     // Re-initialize the chunk to a blank state
     initChunk(chunk);
 }
 
-void writeChunk(Chunk* chunk, uint8_t byte, unsigned int line)
+void writeChunk(Chunk* chunk, uint8_t byte, int line)
 {
     // If the "code" byte array is too small, grow it
     if (chunk->capacity < chunk->count + 1)
     {
-        unsigned int oldCapacity = chunk->capacity;
+        int oldCapacity = chunk->capacity;
         chunk->capacity = GROW_CAPACITY(oldCapacity);
         chunk->code = GROW_ARRAY(chunk->code, uint8_t, oldCapacity, chunk->capacity);
-        chunk->lines = GROW_ARRAY(chunk->lines, unsigned int, oldCapacity, chunk->capacity);
+        chunk->lines = GROW_ARRAY(chunk->lines, int, oldCapacity, chunk->capacity);
     }
 
     // Add the new element
