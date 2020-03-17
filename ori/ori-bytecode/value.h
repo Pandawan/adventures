@@ -3,12 +3,16 @@
 
 #include "common.h"
 
+typedef struct sObj Obj;
+typedef struct sObjString ObjString;
+
 // Types a value can represent
 typedef enum
 {
     VAL_BOOL,
     VAL_NULL,
     VAL_NUMBER,
+    VAL_OBJ, // Represents any heap-allocated object
 } ValueType;
 
 typedef struct
@@ -20,25 +24,31 @@ typedef struct
     union {
         bool boolean;
         double number;
+        Obj* obj;
     } as;
 } Value;
 
 #define IS_BOOL(value) ((value).type == VAL_BOOL)
 #define IS_NULL(value) ((value).type == VAL_NULL)
 #define IS_NUMBER(value) ((value).type == VAL_NUMBER)
+#define IS_OBJ(value) ((value).type == VAL_OBJ)
 
 // Converts the given ori bool to a native C bool
 #define AS_BOOL(value) ((value).as.boolean)
-// Converts the given ori number ot a native C double
+// Converts the given ori number to a native C double
 #define AS_NUMBER(value) ((value).as.number)
 // NOTE: No need for AS_NULL because there's only ONE null value
+// Converts the given ori obj to a native C pointer to Obj
+#define AS_OBJ(value) ((value).as.obj)
 
 // Convert the given native C bool to ori bool
 #define BOOL_VAL(value) ((Value){VAL_BOOL, {.boolean = value}})
 // Convert the given native C null to ori null
 #define NULL_VAL ((Value){VAL_NULL, {.number = 0}})
-// Convert the given native c double to a ori number
+// Convert the given native c double to ori number
 #define NUMBER_VAL(value) ((Value){VAL_NUMBER, {.number = value}})
+// Convert the given native c pointer to Obj to ori obj
+#define OBJ_VAL(value) ((Value){VAL_OBJ, {.obj = value}})
 
 // TODO: Maybe add some macros for "generic" dynamic arrays because this is duplicate of Chunk
 

@@ -260,6 +260,14 @@ static void compileNumber()
     emitConstant(NUMBER_VAL(value));
 }
 
+static void compileString()
+{
+    // Convert content of string into a constant value (removing the quotes)
+    // TODO: Add support for escape sequences
+    emitConstant(OBJ_VAL(copyString(parser.previous.start + 1,
+                                    parser.previous.length - 2)));
+}
+
 static void compileUnary()
 {
     TokenType operatorType = parser.previous.type;
@@ -310,7 +318,7 @@ ParseRule rules[] = {
     {NULL, compileBinary, PREC_COMPARISON},   // TOKEN_LESS
     {NULL, compileBinary, PREC_COMPARISON},   // TOKEN_LESS_EQUAL
     {NULL, NULL, PREC_NONE},                  // TOKEN_IDENTIFIER
-    {NULL, NULL, PREC_NONE},                  // TOKEN_STRING
+    {compileString, NULL, PREC_NONE},         // TOKEN_STRING
     {compileNumber, NULL, PREC_NONE},         // TOKEN_NUMBER
     {NULL, NULL, PREC_NONE},                  // TOKEN_AND
     {NULL, NULL, PREC_NONE},                  // TOKEN_CLASS

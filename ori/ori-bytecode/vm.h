@@ -17,6 +17,8 @@ typedef struct
     Value stack[STACK_MAX];
     // Points ONE element ahead of the last value
     Value* stackTop;
+    // A linked list of all dynamically allocated Objs
+    Obj* objects;
 } VM;
 
 typedef enum
@@ -25,6 +27,9 @@ typedef enum
     INTERPRET_COMPILE_ERROR,
     INTERPRET_RUNTIME_ERROR
 } InterpretResult;
+
+// Expose the vm externally (object.c uses it)
+extern VM vm;
 
 void initVM();
 void freeVM();

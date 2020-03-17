@@ -1,6 +1,7 @@
 #ifndef ori_compiler_h
 #define ori_compiler_h
 
+#include "object.h"
 #include "vm.h"
 
 // Compile the given source code as bytecode into the given chunk
