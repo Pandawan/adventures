@@ -68,12 +68,7 @@ bool valuesEqual(Value a, Value b)
         case VAL_NUMBER:
             return AS_NUMBER(a) == AS_NUMBER(b);
         case VAL_OBJ:
-        {
-            // TODO: Values equal for obj but non-string
-            ObjString* aString = AS_STRING(a);
-            ObjString* bString = AS_STRING(b);
-            return aString->length == bString->length &&
-                   memcmp(aString->chars, bString->chars, aString->length) == 0;
-        }
+            // Because of string interning, all strings with the same content will have the same value
+            return AS_OBJ(a) == AS_OBJ(b);
     }
 }

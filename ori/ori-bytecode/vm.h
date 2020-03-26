@@ -2,6 +2,7 @@
 #define ori_vm_h
 
 #include "chunk.h"
+#include "table.h"
 #include "value.h"
 
 // TODO: Should there be a dynamic stack (still with a max amount but bigger than this)
@@ -17,6 +18,8 @@ typedef struct
     Value stack[STACK_MAX];
     // Points ONE element ahead of the last value
     Value* stackTop;
+    // Hash Table of ALL strings for string interning
+    Table strings;
     // A linked list of all dynamically allocated Objs
     Obj* objects;
 } VM;

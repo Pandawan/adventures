@@ -34,6 +34,8 @@ struct sObjString
     // TODO: Use "flexible array members" to avoid having an extra pointer to chars
     // TODO: Allow for unicode UTF-8 rather than ASCII char
     char* chars;
+    // Cached hash of the string so it doesn't have to be calculated multiple times
+    uint32_t hash;
 };
 
 // Convert the given c-string into an ObjString (taking ownership of the c-string)
