@@ -18,6 +18,8 @@ typedef struct
     Value stack[STACK_MAX];
     // Points ONE element ahead of the last value
     Value* stackTop;
+    // Global variables
+    Table globals;
     // Hash Table of ALL strings for string interning
     Table strings;
     // A linked list of all dynamically allocated Objs
